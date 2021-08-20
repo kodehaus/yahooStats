@@ -2,9 +2,10 @@
   "name": "yahooStats",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test ",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,22 @@
   "bugs": {
     "url": "https://github.com/kodehaus/yahooStats/issues"
   },
-  "homepage": "https://github.com/kodehaus/yahooStats#readme"
+  "homepage": "https://github.com/kodehaus/yahooStats#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "chai": "^4.3.4",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.3",
+    "mocha": "^9.0.3",
+    "procmonrest": "^1.3.0",
+    "semistandard": "^16.0.1"
+  },
+  "semistandard": {
+    "env": [
+      "chai",
+      "mocha"
+    ]
+  }
 }

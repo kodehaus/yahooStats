@@ -24,14 +24,12 @@ describe("an end-to-end test", function () {
     }
   });
 
-  describe("a server", function () {
-    describe("after start", function () {
-      it("responds to the default url", async function () {
-        const actual =  (await axios.get(serverUrl)).status;
-        const expected = 200;
+  describe("Yahoo player search", function () {
+    it("responds to the default url", async function () {
+      const actual = (await axios.get(serverUrl)).status;
+      const expected = 200;
 
-        expect(actual).to.equal(expected);
-      });
+      expect(actual).to.equal(expected);
     });
   });
 });

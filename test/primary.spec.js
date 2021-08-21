@@ -6,7 +6,7 @@ const axios = require("axios").default;
 
 const Procmonrest = require("procmonrest");
 
-const serverUrl = "http://localhost:5000";
+const serverUrl = "http://localhost:3000";
 
 describe("an end-to-end test", function () {
   const serverProcess = new Procmonrest({
@@ -19,20 +19,19 @@ describe("an end-to-end test", function () {
   });
 
   after(() => {
-    if (serverProcess.running) {
+    if (serverProcess.isRunning) {
       return serverProcess.stop();
     }
   });
 
   describe("a server", function () {
     describe("after start", function () {
-      it("respond to the default url", async function (done) {
-        const actual = await (await axios.get(serverUrl)).status;
+      it("responds to the default url", async function () {
+        const actual =  (await axios.get(serverUrl)).status;
         const expected = 200;
 
         expect(actual).to.equal(expected);
-        done();
-      }).catch(done) ;
+      });
     });
   });
 });

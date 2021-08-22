@@ -26,9 +26,12 @@ describe("an end-to-end test", function () {
 
   describe("Yahoo player search", function () {
     it("responds to the default url", async function () {
+      //given 
       const actual = (await axios.get(serverUrl)).status;
-      const expected = 200;
 
+      //when 
+      const expected = 200;
+      //then
       expect(actual).to.equal(expected);
     });
   });

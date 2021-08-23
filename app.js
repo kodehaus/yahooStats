@@ -3,11 +3,17 @@ const exphbs = require('express-handlebars');
 
 const app = express();
 
-app.engine('handlebars', exphbs());
+//setting middleware
+app.use(express.static('public'))
+
+
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
+//TODO refactof this file to serve from the styles folder
+app.use("/style.css", express.static('style.css')) 
 app.get('/', function (req, res, next) {
-  res.render('home', { layout: false });
+  res.render('home');
 });
 
 // set our port

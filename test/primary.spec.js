@@ -1,12 +1,37 @@
 const { expect } = require("chai");
 const path = require("path");
+const serverConfig = require('../config');
 
 const fsPromise = require("fs").promises;
 const axios = require("axios").default;
 
 const Procmonrest = require("procmonrest");
 
-const serverUrl = "http://localhost:3000";
+const serverUrl = serverConfig.hostUrl + ":" +serverConfig.port ;
+
+
+describe("server config", function() {
+  it("should have valid port number", async function () {
+    //Given
+
+    //When
+    const actual = parseInt(serverConfig.port, 10);
+
+    // Then
+    expect(actual).to.be.a('number');
+  
+  });
+  it("should have a valid host name", async function () {
+    //Given
+
+    //When
+    const actual = serverConfig.hostUrl;
+
+    // Then
+    expect(actual.startsWith("http://")).to.be.true;
+  
+  });
+});
 
 describe("an end-to-end test", function () {
   const serverProcess = new Procmonrest({
@@ -32,6 +57,7 @@ describe("an end-to-end test", function () {
       //when 
       const expected = 200;
       //then
+      console.log(serverConfig)
       expect(actual).to.equal(expected);
     });
   });

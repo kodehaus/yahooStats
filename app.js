@@ -1,5 +1,6 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
+const serverConfig = require('./config');
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.get('/', function (req, res, next) {
 });
 
 // set our port
-app.set('port', process.env.PORT || 3000);
+app.set('port', serverConfig.port);
 
 // start listening on our port
 const server = app.listen(app.get('port'), () => {

@@ -50,14 +50,13 @@ describe("an end-to-end test", function () {
   });
 
   describe("Yahoo player search", function () {
-    it("responds to the default url", async function () {
+    it("default url responds", async function () {
       //given 
       const actual = (await axios.get(serverUrl)).status;
 
       //when 
       const expected = 200;
       //then
-      console.log(serverConfig)
       expect(actual).to.equal(expected);
     });
   });

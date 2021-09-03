@@ -36,7 +36,7 @@ describe("server config", function() {
 describe("an end-to-end test", function () {
   const serverProcess = new Procmonrest({
     command: "npm start",
-    waitFor: /listening on port \d{4}/i,
+    waitFor: /listening on port \d{2|3|4|5}/i,
   });
 
   before(() => {

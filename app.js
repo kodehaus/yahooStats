@@ -3,11 +3,15 @@ const exphbs = require('express-handlebars');
 const https = require('https');
 const http = require('http');
 const fs = require('fs');
+const Cookies = require('cookies');
 
 const serverConfig = require('./config');
 const YahooFantasy = require('yahoo-fantasy');
 
 const app = express();
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
 
 //set up the https for ssl call backs
 const options = {
@@ -27,32 +31,21 @@ app.set('view engine', 'handlebars');
 //TODO refactof this file to serve from the styles folder
 app.use("/style.css", express.static('style.css')) 
 
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
 
-app.tokenCallback = function ({ access_token, refresh_token }) {
-  return new Promise((resolve, reject) => {
-    // client is redis client
-    client.set("accessToken", access_token, (err, res) => {
-      // could probably handle this with a multi... 
-      // and you know... handle the errors...
-      // good thing this is only an example!
-      client.set("accessToken", access_token, (err, res) => {
-        return resolve();
-      })
-    })
-  });
-};
+function refreshToken(paramA, paramB){
+  console.log('loggin the refresh token: ')
+  console.log('refresh token');
+}
+
 // set up the yahoo ff module
-app.yahooFantasy = new YahooFantasy(
+const yf = new YahooFantasy(
   serverConfig.yahooAppKey, // Yahoo! Application Key
   serverConfig.yahooAppSecret, // Yahoo! Application Secret
-  serverConfig.yahooAppCallbackFunction, // callback function when user token is refreshed (optional)
+  refreshToken, // callback function when user token is refreshed (optional)
   serverConfig.yahooRedirectUrl // redirect endpoint when user authenticates (optional)
 );
-
-// start listening on our port
-//const server = app.listen(app.get('port'), () => {
-//  console.log(`listening on port ${server.address().port}`);
-//});
 
 //create the http service
 const server = http.createServer(app);
@@ -64,6 +57,7 @@ const httpsServer = https.createServer(options, app);
 //start the http service
 server.listen(serverConfig.port, function(){
   console.log(`listening on port ${server.address().port}`);
+  console.log(`${serverConfig.yahooRedirectUrl}`);
 });
 
 //start the https service
@@ -71,21 +65,34 @@ httpsServer.listen(serverConfig.httpsPort, function() {
   console.log(`Https server listening on port: ${httpsServer.address().port}`);
 })
 
+function transferCredentials(responseObj){
+  const curDateTime = new Date();
+  const accessObj = {};
+    accessObj.access_token = responseObj.access_token; 
+    accessObj.refresh_token = responseObj.refresh_token;
+    accessObj.expires_in = dt.addSeconds(curDateTime, responseObj.expires_in); //3600;
+    accessObj.token_type = responseObj.token_type; //'bearer';
+    return accessObj;
+}
 
 // Yahoo auth route
 app.get('/auth/yahoo', (req, res) => {
   // if the user is not authenticated call the yahoo auth function to load the yahoo login page
-  app.yahooFantasy.auth(res);
+  yf.auth(res);
 });
 
 // Yahoo call back route
 app.get("/auth/yahoo/callback", (req, res) => {
-  app.yahooFantasy.authCallback(req, (err) => {
-    if (err) {
-      return res.redirect("/error");
-    }
-    return res.redirect("/");
-  });
+  yf.authCallback(req, refreshToken);
+//   console.log(JSON.stringify(yahooFantasy));
+  res.redirect('/');
+  res.end();
+  // app.yahooFantasy.authCallback(req, (err) => {
+  //   if (err) {
+  //     return res.redirect("/error");
+  //   }
+  //   return res.redirect("/");
+  // });
 });
 
 app.get('/', function (req, res, next) {
